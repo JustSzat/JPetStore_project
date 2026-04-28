@@ -20,14 +20,14 @@ class Locators:
 
 class HomePage(BasePage):
 
-    def search_item(self, text):
+    def search_item(self, word):
 
         """
-        Enter some name item
+        Enter name of an item
         """
         input_item = self.driver.find_element(*Locators.SEARCH_BOX)
         input_item.clear()
-        input_item.send_keys(text)
+        input_item.send_keys(word)
 
     def search_btn(self):
 
