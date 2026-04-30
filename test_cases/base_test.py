@@ -12,13 +12,13 @@ class BaseTest(unittest.TestCase):
         self.driver = webdriver.Chrome()
         self.driver.get("https://petstore.octoperf.com")
         self.driver.maximize_window()
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(8)
 
     def tearDown(self):
         self.driver.quit()
 
 if __name__ == "__main__":
-    unittest.main(verbosity=0)
+    unittest.main(verbosity=2)
 
 
 
