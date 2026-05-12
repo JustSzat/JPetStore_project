@@ -9,26 +9,18 @@ class BasePage():
         self._verify_page()
 
 
-    def find_element_located(self, locator):
-        return WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(locator))
+    def find(self, locator):
+        return WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locator)
 
-    def find_all_elements_located(self, locator):
-        return WebDriverWait(self.driver, 10).until(EC.presence_of_all_elements_located(locator))
-
-    def visible_element_located(self, locator):
-        return WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locator))
-
-    def visible_all_elements_located(self, locator):
+    def find_all(self, locator):
         return WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(locator))
 
-    def element_clickable(self, locator):
-        return WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locator))
-
     def click(self, locator):
-        self.element_clickable(locator).click()
+        element = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locator))
+        element.click()
 
-    def send_keys(self, locator, text):
-        element = self.find_element_located(locator)
+    def type(self, locator, text):
+        element = self.find(locator)
         element.clear()
         element.send_keys(text)
 
