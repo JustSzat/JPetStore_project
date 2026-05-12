@@ -1,4 +1,4 @@
-import time
+
 from pydoc import text
 
 from selenium.webdriver.support import expected_conditions as EC
@@ -33,26 +33,19 @@ class HomePage(BasePage):
         """
         Enter name of an item
         """
-        self.send_keys(Locators.SEARCH_BTN, "tekst")
-
-
-
-    def get_number_of_errors_message(self):
-        """
-        Get number of errors message
-        """
-        return self.driver.find_element
+        self.type(Locators.SEARCH_BOX, word)
+        self.click(Locators.SEARCH_BTN)
 
     def get_visible_errors(self):
 
-        errors = self.find_all_elements_located(Locators.VISIBLE_ERRORS)
+        errors = self.find_all(Locators.VISIBLE_ERRORS)
         visible_errors = []
         for e in errors:
             visible_errors.append(e.text)
         return visible_errors
 
     def get_list_of_searching_products(self):
-        products = self.find_all_elements_located(Locators.LIST_OF_PRODUCTS)
+        products = self.find_all(Locators.LIST_OF_PRODUCTS)
         products_list =[]
         for p in products:
             products_list.append(p.text)
@@ -62,7 +55,7 @@ class HomePage(BasePage):
         self.click(Locators.QUICKLINK_FISH)
 
     def get_list_of_linked_product(self):
-        linked_products = self.find_all_elements_located(Locators.LINKED_LINKS)
+        linked_products = self.find_all(Locators.LINKED_LINKS)
         linked_product_list = []
         for lp in linked_products:
             linked_product_list.append(lp.text)
