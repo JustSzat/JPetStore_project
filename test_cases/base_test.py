@@ -12,7 +12,7 @@ class BaseTest(unittest.TestCase):
         self.driver = webdriver.Chrome()
         self.driver.get("https://petstore.octoperf.com")
         self.driver.maximize_window()
-        self.driver.implicitly_wait(8)
+
 
     def tearDown(self):
         self.driver.quit()

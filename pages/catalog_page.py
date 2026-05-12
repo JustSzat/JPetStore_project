@@ -16,6 +16,4 @@ class Locators:
 
 class CatalogPage(BasePage):
     def return_to_main_menu(self):
-        r_main_menu = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locators.RETURN_TO_MAIN_MENU))
-        r_main_menu.click()
-        self.driver.implicitly_wait(5)
+        self.click(Locators.RETURN_TO_MAIN_MENU)

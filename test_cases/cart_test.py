@@ -1,3 +1,5 @@
+import unittest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -73,6 +75,9 @@ class CartTest(BaseTest):
         goldfish_female = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(catalog_page.Locators.GOLDFISH_FEMALE))
         goldfish_female.click()
         cart_list = self.cart_page.get_shopping_cart_list()
+        """
+        Tu nie mialam pomyslu jak zrobic asercje, zeby uzyskac sume cen z tej listy i porownac ja z total price. Zostawilam to, jesli udaloby sie podlaczyc ddt lub sql, to i tak to edytuje.
+        """
         
 
 
