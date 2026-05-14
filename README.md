@@ -1,9 +1,12 @@
-
-print("----- DEBUG -----")
-print("PRODUCT RAW:", repr(product))
-product = product.strip()
-print("PRODUCT CLEAN:", repr(product))
-print("AVAILABLE KEYS:", [repr(k) for k in PRODUCT_LOCATORS.keys()])
-locator = PRODUCT_LOCATORS.get(product)
-print("LOCATOR:", locator)
-print("------------------")
+---- DEBUG -----
+PRODUCT RAW: 'Goldfish'
+PRODUCT CLEAN: 'Goldfish'
+AVAILABLE KEYS: ["'Iguana'", "'Goldfish'", "'Goldfish Female'"]
+LOCATOR: ('xpath', '//div[@id="Catalog"]//td//a[contains(@href, "FI-SW-01")]')
+------------------
+----- DEBUG -----
+PRODUCT RAW: 'Goldfish_Female'
+PRODUCT CLEAN: 'Goldfish_Female'
+AVAILABLE KEYS: ["'Iguana'", "'Goldfish'", "'Goldfish Female'"]
+LOCATOR: None
+------------------
