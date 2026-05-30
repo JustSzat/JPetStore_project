@@ -10,7 +10,8 @@ class BasePage():
 
 
     def find(self, locator):
-        return WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locator)
+        return WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locator))
+
 
     def find_all(self, locator):
         return WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(locator))

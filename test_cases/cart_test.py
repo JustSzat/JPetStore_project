@@ -4,11 +4,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from pages import catalog_page, cart_page, home_page
+from pages import cart_page, catalog_page
 from pages.cart_page import CartPage
-from pages.catalog_page import Locators
+from pages.catalog_page import Locators, CatalogPage
 from pages.home_page import HomePage
 from test_cases.base_test import BaseTest
+from test_data.store_items import load_data
 
 
 class CartTest(BaseTest):
@@ -17,68 +18,83 @@ class CartTest(BaseTest):
         self.home_page = HomePage(self.driver)
         self.home_page.click_enter_the_store()
         self.cart_page = CartPage(self.driver)
+        self.catalog_page = CatalogPage(self.driver)
 
-    def test_empty_cart_message(self):
-        self.cart_page.enter_to_cart()
-        message = self.cart_page.get_message_empty_cart()
-        print(message.text)
-        self.assertIn("Your cart is empty", message.text)
 
-    def test_adding_to_cart(self):
+    def test_added_items_are_visible_in_cart(self):
         """
-        Test, ktory sprawdza czy dodany produkt jest w koszyku
+        Add items and check their visibility in cart
         """
-        self.cart_page.add_to_the_cart()
-        iguana_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(catalog_page.Locators.IGUANA_BTN))
-        iguana_btn.click()
-        add_to_cart = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[@id = "Catalog"]//td/a[@class = "Button" and contains(text(), "Add to Cart")]')))
-        add_to_cart.click()
+        data = load_data("test_data/data_search.csv")
+
+        added_items = []
+        for category, product in data:
+            print(f"Added: {product}")
+            self.home_page.open_category(category)
+            self.cart_page.add_item(product)
+            added_items.append(product)
+
         cart_list = self.cart_page.get_shopping_cart_list()
-        iguana_text = self.driver.find_element(*Locators.IGUANA).text
-        self.assertTrue(
-            any(iguana_text in item for item in cart_list)
-        )
-    def test_remove_item_message(self):
-        """
-        Usuwanie produktu z koszyka
-        """
-        self.cart_page.add_to_the_cart()
-        iguana_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(catalog_page.Locators.IGUANA_BTN))
-        iguana_btn.click()
-        add_to_cart = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(
-            (By.XPATH, '//div[@id = "Catalog"]//td/a[@class = "Button" and contains(text(), "Add to Cart")]')))
-        add_to_cart.click()
-        self.cart_page.remove_item()
-        empty_cart = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH,'//div[@id="Cart"]//tr/td/b[contains(text(), "Your cart is empty")]')))
-        self.assertIn("Your cart is empty", empty_cart.text)
+        print(f"Cart list: {cart_list}")
 
-    def test_remove_item(self):
-        self.cart_page.add_to_the_cart()
-        iguana_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(catalog_page.Locators.IGUANA_BTN))
-        iguana_btn.click()
-        add_to_cart = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(
-            (By.XPATH, '//div[@id = "Catalog"]//td/a[@class = "Button" and contains(text(), "Add to Cart")]')))
-        add_to_cart.click()
-        self.cart_page.remove_item()
-        cart_list = self.cart_page.get_shopping_cart_list()
-        self.assertNotIn("RP-LI-02", " ".join(cart_list))
+        for product in added_items:
+            self.assertIn(product,"".join(cart_list))
 
-    def test_total_price(self):
-        self.cart_page.add_to_the_cart()
-        iguana_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(catalog_page.Locators.IGUANA_BTN))
-        iguana_btn.click()
-        fish_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(home_page.Locators.QUICKLINK_FISH))
-        fish_btn.click()
-        self.cart_page.add_to_the_cart_fish()
-        goldfish_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(catalog_page.Locators.GOLDFISH_BTN))
-        goldfish_btn.click()
-        goldfish_female = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(catalog_page.Locators.GOLDFISH_FEMALE))
-        goldfish_female.click()
-        cart_list = self.cart_page.get_shopping_cart_list()
+    def test_remove_item_and_check_empty_card(self):
         """
-        Tu nie mialam pomyslu jak zrobic asercje, zeby uzyskac sume cen z tej listy i porownac ja z total price. Zostawilam to, jesli udaloby sie podlaczyc ddt lub sql, to i tak to edytuje.
+        Remove items from cart and check if "Your cart is empty" is displayed
         """
-        
+        data = load_data("test_data/data_search.csv")
+
+        for category, product in data:
+            print(f"Added: {product} from {category}")
+
+            self.home_page.open_category(category)
+            self.cart_page.add_item(product)
+
+        for i in range(len(data)):
+            self.cart_page.remove_item()
+
+        message = self.cart_page.get_empty_cart_message()
+        self.assertIn("Your cart is empty", message)
+
+    def test_add_products_and_check_count(self):
+        """
+        Checking that number of products in cart matches expected count
+        """
+        # loading data from CSV
+        data = load_data("test_data/data_search.csv")
+        # select two products
+        products_to_add = data[:2]
+        # add products to cart
+        for category, product in products_to_add:
+
+            print(f"Added: {product} from {category}")
+
+            self.home_page.open_category(category)
+            self.cart_page.add_item(product)
+        # get list of products in cart
+        cart_items = self.cart_page.get_shopping_cart_list()
+        # check number of products in cart
+        self.assertEqual(print(len(cart_items)), print(len(products_to_add)))
+
+    def test_add_items_and_verify_total_price(self):
+        data = load_data("test_data/data_search.csv")
+
+        for category, product in data:
+            print(f"Added: {product} from {category}")
+            self.home_page.open_category(category)
+            self.cart_page.add_item(product)
+
+        total_price = self.cart_page.get_total_price()
+        item_added_price = self.cart_page.get_items_prices()
+        self.assertEqual(total_price, sum(item_added_price))
+
+
+
+if __name__=="__main__":
+    import unittest
+    unittest.main(verbosity=2)
 
 
 
