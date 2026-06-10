@@ -7,6 +7,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base_page import BasePage
+import test_data.category_locators
+
+from test_data import category_locators
+from test_data.product_locators import PRODUCT_LOCATORS
+from test_data.category_locators import CATEGORY_LOCATORS
 
 class Locators:
     ENTER_CLICK = (By.LINK_TEXT, 'Enter the Store')
@@ -28,13 +33,10 @@ class Locators:
 class HomePage(BasePage):
 
 
-    def search_item(self, word):
 
-        """
-        Enter name of an item
-        """
-        self.type(Locators.SEARCH_BOX, word)
-        self.click(Locators.SEARCH_BTN)
+
+    def main_picture_is_visible(self):
+        return self.find(Locators.MAIN_PICTURE).is_displayed()
 
     def get_visible_errors(self):
 
@@ -60,6 +62,12 @@ class HomePage(BasePage):
         for lp in linked_products:
             linked_product_list.append(lp.text)
         return linked_product_list
+
+    def open_category(self, category):
+
+        locator = CATEGORY_LOCATORS.get(category)
+        self.click(locator)
+
 
     def click_enter_the_store(self):
         self.click(Locators.ENTER_CLICK)

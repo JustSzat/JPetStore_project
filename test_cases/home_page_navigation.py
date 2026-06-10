@@ -17,15 +17,13 @@ class HomePageNavigationTest(BaseTest):
     def setUp(self):
         super().setUp()
         self.home_page = HomePage(self.driver)
-        self.base_page = BasePage(self.driver)
         self.catalog_page = CatalogPage(self.driver)
         self.home_page.click_enter_the_store()
 
 
     def test_navigation_to_home_page(self):
         self.home_page.click_quicklink()
-        home_pic = self.home_page.find_element_located(Locators.MAIN_PICTURE)
-        self.assertTrue(home_pic.is_displayed())
+        self.assertTrue(self.home_page.main_picture_is_visible())
 
     def test_return_to_main_menu(self):
         self.home_page.click_quicklink()
@@ -34,7 +32,6 @@ class HomePageNavigationTest(BaseTest):
         print(website_title)
         self.assertIn("JPetStore Demo", website_title)
         self.home_page.search_item("Dogs")
-        self.base_page.click(Locators.SEARCH_BTN)
         self.catalog_page.return_to_main_menu()
 
 

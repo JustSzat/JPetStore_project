@@ -6,10 +6,10 @@ from ddt import ddt, data, unpack
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-
+from pages import catalog_page
 from pages import home_page
-from pages.catalog_page import CatalogPage
-from pages.home_page import HomePage
+from pages.catalog_page import CatalogPage, Locators
+from pages.home_page import HomePage, Locators
 from test_cases.base_test import BaseTest
 from pages import catalog_page
 
@@ -40,10 +40,10 @@ class SearchEngineTest(BaseTest):
         """
         Test of searching existing items
         """
-        self.home_page.search_item("Fish")
-        self.home_page.search_btn()
-        results = WebDriverWait(self.driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//div[@id = "Catalog"]//b')))
-        self.assertTrue(len(results) > 0)
+        expected_product = self.catalog_page.enter_and_search_item("Fish")
+        results = self.catalog_page.get_fish_results()
+        self.assertIn(expected_product, results,f"Product '{expected_product}' not found in search results. "
+        f"Actual results: {results}")
 
     def test_search_no_keyword(self):
         """
@@ -91,16 +91,6 @@ class SearchEngineTest(BaseTest):
         print(len(list_by_quicklink))
         assert len(list_by_quicklink) == 4
         self.assertNotEqual(len(list_by_entered), len(list_by_quicklink))
-
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
