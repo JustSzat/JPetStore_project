@@ -2,9 +2,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from pages import home_page
+from pages.home_page import Locators as HomeLocators
 from pages.base_page import BasePage
-from pages.home_page import HomePage, Locators
+
 
 
 
@@ -18,7 +18,7 @@ class Locators:
     GOLDFISH_FEMALE = (By.XPATH, '//div[@id="Catalog"]//tr//td//a[contains(@href, "EST-21") and @class = "Button"]')
     GOLDFISH_FEMALE_TO_CART = (By.XPATH, '//div[@id = "Catalog"]//td/a[contains(@href, "EST-21") and contains(text(), "Add to Cart")]')
     POODLE = (By.XPATH, '//div[@id = "Catalog"]//tr/td/a[contains(@href, "K9-PO-02")]')
-    FISH_RESULTS = (By.XPATH, '//div[@id = "Catalog"]//b')
+    FISH_RESULTS = (By.XPATH, '//div[@id = "Catalog"]//td[contains(text(), "fish")]')
 
 
 
@@ -29,11 +29,13 @@ class CatalogPage(BasePage):
         """
         Enter name of an item and click 'Search'
         """
-        self.type(Locators.home_page.SEARCH_BOX, word)
-        self.click(Locators.home_page.SEARCH_BTN)
+        self.type(HomeLocators.SEARCH_BOX, word)
+        self.click(HomeLocators.SEARCH_BTN)
+        return word
 
     def get_fish_results(self):
-        self.find_all(Locators.FISH_RESULTS)
+        elements = self.find_all(Locators.FISH_RESULTS)
+        return [element.text for element in elements]
 
 
     def select_iguana(self):

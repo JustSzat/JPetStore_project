@@ -79,6 +79,9 @@ class CartTest(BaseTest):
         self.assertEqual(print(len(cart_items)), print(len(products_to_add)))
 
     def test_add_items_and_verify_total_price(self):
+        """
+        Test of verification of total price in the cart
+        """
         data = load_data("test_data/data_search.csv")
 
         for category, product in data:
