@@ -25,36 +25,39 @@ class CartTest(BaseTest):
         """
         Add items and check their visibility in cart
         """
+        # loading data from CSV
         data = load_data("test_data/data_search.csv")
-
+        # making list of products will be added
         added_items = []
+        # add products to cart
         for category, product in data:
             print(f"Added: {product}")
             self.home_page.open_category(category)
             self.cart_page.add_item(product)
             added_items.append(product)
-
+        # get list of added items from the cart
         cart_list = self.cart_page.get_shopping_cart_list()
         print(f"Cart list: {cart_list}")
-
+        # verify that all added products are in the cart
         for product in added_items:
             self.assertIn(product,"".join(cart_list))
 
-    def test_remove_item_and_check_empty_card(self):
+    def test_remove_item_and_check_empty_cart(self):
         """
         Remove items from cart and check if "Your cart is empty" is displayed
         """
+        # loading data from CSV
         data = load_data("test_data/data_search.csv")
-
+        # add products
         for category, product in data:
             print(f"Added: {product} from {category}")
 
             self.home_page.open_category(category)
             self.cart_page.add_item(product)
-
+        # delete products from the cart
         for i in range(len(data)):
             self.cart_page.remove_item()
-
+        # get message of empty cart
         message = self.cart_page.get_empty_cart_message()
         self.assertIn("Your cart is empty", message)
 
@@ -75,22 +78,28 @@ class CartTest(BaseTest):
             self.cart_page.add_item(product)
         # get list of products in cart
         cart_items = self.cart_page.get_shopping_cart_list()
+        print(f"Products in cart: {len(cart_items)}")
+        print(f"Expected count: {len(products_to_add)}")
         # check number of products in cart
-        self.assertEqual(print(len(cart_items)), print(len(products_to_add)))
+        self.assertEqual(len(cart_items), len(products_to_add))
 
     def test_add_items_and_verify_total_price(self):
         """
         Test of verification of total price in the cart
         """
+        # loading data from CSV
         data = load_data("test_data/data_search.csv")
-
+        # add products to cart
         for category, product in data:
             print(f"Added: {product} from {category}")
             self.home_page.open_category(category)
             self.cart_page.add_item(product)
 
+        # get total price form the cart
         total_price = self.cart_page.get_total_price()
+        # get prices of added products
         item_added_price = self.cart_page.get_items_prices()
+        # check that total price is equal to the sum of products' prices
         self.assertEqual(total_price, sum(item_added_price))
 
 
